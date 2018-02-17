@@ -1,0 +1,9 @@
+bin/
+lib/
+lib64
+pyvenv.cfg
+share/
+pip-selfcheck.json
+__pycache__
+*.egg-info
+/man/*
