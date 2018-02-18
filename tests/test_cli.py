@@ -10,40 +10,50 @@ from access_log_filter.cli import (
     _filter_strings,
 )
 
+fixtures_dir = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)),
+    'fixtures'
+)
 
 class TestCli(object):
-
     def setup(self):
+        self.ip = '127.0.0.1'
         self.access_log_file = 'access_log'
-        self.valid_argv = [self.access_log_file, '--ip', '127.0.0.1']
+        self.valid_argv = [self.access_log_file, '--ip', self.ip]
         self.valid_arg_dict = {
             '--help': False,
             '--version': False,
             '<access_log>': self.access_log_file,
-            '--ip': '127.0.0.1'
+            '--ip': self.ip
         }
         with open(self.access_log_file, 'w'):
+            # Dummy access_log blank file
             pass
+
+        with open(os.path.join(fixtures_dir, 'invalid_addr.txt')) as f:
+            self.invalid_addr = f.read().splitlines()
+
+        with open(os.path.join(fixtures_dir, 'valid_addr.txt')) as f:
+            self.valid_addr = f.read().splitlines()
 
     def teardown(self):
         os.remove(self.access_log_file)
-
 
     @raises(SystemExit)
     def test_parse_args_with_no_arguments_should_system_exit(self):
         _parse_args([])
 
-    @raises(SystemExit) 
+    @raises(SystemExit)
     def test_parse_without_access_log_argument_should_system_exit(self):
         argv = ['--ip', '127.0.0.1']
         _parse_args(argv)
 
-    @raises(SystemExit) 
+    @raises(SystemExit)
     def test_parse_with_bad_flag_argument_should_system_exit(self):
         argv = ['access_log', '--pi', '127.0.0.1']
         _parse_args(argv)
 
-    @raises(SystemExit) 
+    @raises(SystemExit)
     def test_parse_without_ip_argument_value_should_system_exit(self):
         argv = ['access_log', '--ip']
         _parse_args(argv)
@@ -66,37 +76,19 @@ class TestCli(object):
 
     @with_setup(setup, teardown)
     def test_validate_args_with_invalid_address_should_schema_error(self):
-        args_dict_bad_addr = self.valid_arg_dict
-        bad_addr = [
-            '127.0.0.256',
-            '127.0.-1',
-            '2003::dead:beef:4dad:23:46:bb:101',
-            '2003:beef:4dad:23:46:bb:101',
-            '10.0.0.0/33',
-            '10.0.0/8',
-            '2001::::/18',
-            '2001:db8::/129'
-        ]
+        args_dict_invalid_addr = self.valid_arg_dict
 
-        for bad_addr in bad_addr:
-            args_dict_bad_addr['--ip'] = bad_addr
-            assert_raises(SchemaError, _validate, args_dict_bad_addr)
+        for invalid_addr in self.invalid_addr:
+            args_dict_invalid_addr['--ip'] = invalid_addr
+            assert_raises(SchemaError, _validate, args_dict_invalid_addr)
 
     @with_setup(setup, teardown)
     def test_validate_args_with_valid_address_works(self):
-        args_dict_good_addr = self.valid_arg_dict
-        good_addreses = [
-            '10.0.0.0/8',
-            '2001::/18',
-            '2001:db8::/128',
-            '::1',
-            '127.0.0.1',
-            '192.168.0.1'
-        ]
+        args_dict_valid_addr = self.valid_arg_dict
 
-        for good_addr in good_addreses:
-            args_dict_good_addr['--ip'] = good_addr
-            _validate(args_dict_good_addr)
+        for valid_addr in self.valid_addr:
+            args_dict_valid_addr['--ip'] = valid_addr
+            _validate(args_dict_valid_addr)
 
     @raises(SchemaError)
     def test_validate_args_with_nonexistent_file_schema_error(self):
@@ -108,20 +100,22 @@ class TestCli(object):
         eq_(_filter_strings([True, None, 'a', 1]), ['a'])
         eq_(_filter_strings(['a', 'b', 'c']), ['a', 'b', 'c'])
         eq_(_filter_strings([{}, (1,), [], SchemaError, 'a']), ['a'])
-    
+
 
     @patch('access_log_filter.cli._parse_args')
     @patch('access_log_filter.cli._validate')
-    @patch('access_log_filter.cli.AccessLog')
+    @patch('access_log_filter.cli.AccessLog.filter_it')
+    @patch('access_log_filter.cli.IpFilter')
     @with_setup(setup, teardown)
     def test_run_parse_validate_and_filter(
-        self, 
-        mock_access_log,
-        mock_validate,
-        mock_parse_args
+            self,
+            mock_ip_filter,
+            mock_access_log_filter,
+            mock_validate,
+            mock_parse_args
     ):
 
         run(self.valid_argv)
         ok_(mock_parse_args.called)
         ok_(mock_validate.called)
-        ok_(mock_access_log.called)
+        ok_(mock_access_log_filter.called)

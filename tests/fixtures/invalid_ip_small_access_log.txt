@@ -1,0 +1,1 @@
+256.z.39.180 - - [02/Jun/2015:17:00:46 -0700] "GET /Leaflets/2001/?M=D HTTP/1.1" 200 451 "-" "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)" "redlug.com"

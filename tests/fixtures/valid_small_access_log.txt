@@ -1,0 +1,3 @@
+31.184.238.128 - - [02/Jun/2015:17:00:12 -0700] "GET /logs/access.log HTTP/1.1" 200 2145998 "http://kmprograf.forumcircle.com" "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.146 Safari/537.36" "redlug.com"
+157.55.39.180 - - [02/Jun/2015:17:00:46 -0700] "GET /Leaflets/2001/?M=D HTTP/1.1" 200 451 "-" "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)" "redlug.com"
+157.55.39.180 - - [02/Jun/2015:17:00:46 -0700] "GET /Leaflets/2001/?M=D HTTP/1.1" 200 451 "-" "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)" "redlug.com"

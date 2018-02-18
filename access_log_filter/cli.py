@@ -22,7 +22,7 @@ import sys
 from ipaddress import ip_network
 from docopt import docopt
 from schema import Schema, SchemaError, Use
-from access_log_filter import AccessLog, __version__
+from access_log_filter import AccessLog, IpFilter, __version__
 
 
 def _validate(args):
@@ -47,11 +47,14 @@ def run(args=None):
     args = _parse_args(args)
     try:
         _validate(args)
-
     except SchemaError as exc:
-        print(' '.join(_filter_strings(exc.autos)))
+        sys.stderr.write(' '.join(_filter_strings(exc.autos)))
         sys.exit(1)
 
-    AccessLog(
-        args['<access_log>']
+    access_log = AccessLog(args['<access_log>'])
+    filtered = access_log.filter_it(
+        IpFilter(args['--ip'])
     )
+
+    for line in filtered:
+        sys.stdout.write(line)
