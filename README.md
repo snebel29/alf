@@ -1,5 +1,7 @@
-# Access Log Filter
+# Access Log Filter (ALF)
 A simple access_log filter CLI tool written in python
+
+![Alf](https://vignette.wikia.nocookie.net/mugen/images/a/ab/Alf.gif/revision/latest?cb=20121216142416)
 
 ## Prerequisites
 - Linux
