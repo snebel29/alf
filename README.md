@@ -5,13 +5,14 @@ A simple access_log filter CLI tool written in python
 
 ## Prerequisites
 - Linux
-- Most of python3 versions should work, however the tool was developed with `3.5.3` which is the recommended version until full compatibility is verified, refer to [Install python 3.5.3](##Install-python-3.5.3)
+- Most of python3 versions should work, however the tool was developed with `3.5.3` which is the recommended version until full compatibility is verified, refer to [Install python 3.5.3](https://github.com/snebel29/alf#install-python-353)
 - pip
 
 ## Installation
 The tool is shipped as a package so can be integrated into any python package repository either private, or public such as [Pypi](https://pypi.python.org/pypi), but can also be installed locally
 ```
-$ cd access_log_filter/
+$ git clone https://github.com/snebel29/alf.git
+$ cd alf/
 $ pip install .
 ```
 
@@ -68,7 +69,7 @@ $ python
 ## Development
 
 ### Prerequisites
-- Most of python3 versions should work, however the tool was developed with `3.5.3` which is the recommended version until full compatibility is verified, refer to [Install python 3.5.3](##Install-python-3.5.3)
+- Most of python3 versions should work, however the tool was developed with `3.5.3` which is the recommended version until full compatibility is verified, refer to [Install python 3.5.3](https://github.com/snebel29/alf#install-python-353)
 - pip
 
 ### Installation
@@ -81,7 +82,23 @@ $ pip install -e .[dev]
 and run the tests
 ```
 $ tests/test_end_to_end.sh
+```
+Unit and integration tests are supposed to be run using [nose](http://nose.readthedocs.io/en/latest/) depending on your virtualenvironment setup you might run it differently, but you should always run it with python3
+
+Typically you would only run
+```
 $ nosetests -v
+```
+
+But I've noticed that some times nose keeps running the test suite with python2 and failing with some import and undefined errors, reload your environment
+```
+$ source bin/activate
+```
+or force running with python3
+```
+$ nosetests-3.4 -v
+$ python nosetests -v
+$ python3 nosetests -v
 ```
 
 ## Install-python-3.5.3
@@ -106,6 +123,7 @@ $ source bin/activate
 Just some ideas for the moment...
 
 - Compatibility with major python 2 and 3 versions
+- Docker image
 - More flexible and configurable access_log schema
 - Alert on and/or count bad lines (not honoring the schema)
 - Add more filters such as by HTTP method, HTTP version, referrer, etc..
